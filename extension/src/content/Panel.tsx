@@ -1,5 +1,11 @@
-import { useState } from "react";
-import type { GenerateRequestMessage, GenerateResponseMessage } from "../types";
+import { useEffect, useState } from "react";
+import type {
+  GenerateRequestMessage,
+  GenerateResponseMessage,
+  CreateCheckoutMessage,
+  CreateCheckoutResponseMessage,
+  TogglePanelMessage,
+} from "../types";
 
 interface ChatMessage {
   id: number;
@@ -7,6 +13,8 @@ interface ChatMessage {
   text: string;
   isError?: boolean;
   insertable?: boolean;
+  paywall?: boolean;
+  retryInstruction?: string;
 }
 
 const INTRO_MESSAGE: ChatMessage = {
@@ -41,6 +49,15 @@ function requestReply(thread: string, instruction: string): Promise<GenerateResp
   });
 }
 
+function requestCheckout(): Promise<CreateCheckoutResponseMessage> {
+  const message: CreateCheckoutMessage = { type: "CREATE_CHECKOUT" };
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(message, (response: CreateCheckoutResponseMessage) => {
+      resolve(response ?? { error: "No response from extension background." });
+    });
+  });
+}
+
 interface PanelProps {
   getThreadContext: () => string;
   onInsert: (text: string) => boolean;
@@ -53,6 +70,51 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [insertedId, setInsertedId] = useState<number | null>(null);
 
+  useEffect(() => {
+    function handleRuntimeMessage(message: TogglePanelMessage) {
+      if (message.type === "TOGGLE_PANEL") {
+        setIsOpen((v) => !v);
+      }
+    }
+    chrome.runtime.onMessage.addListener(handleRuntimeMessage);
+    return () => chrome.runtime.onMessage.removeListener(handleRuntimeMessage);
+  }, []);
+
+  function pushResponse(instruction: string, response: GenerateResponseMessage) {
+    if (response.error === "free_tier_exhausted") {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: prev.length,
+          role: "assistant",
+          text: "You've used all 10 free replies. Upgrade to keep going.",
+          isError: true,
+          paywall: true,
+        },
+      ]);
+      return;
+    }
+
+    if (response.error || !response.reply) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: prev.length,
+          role: "assistant",
+          text: response.error ?? "Something went wrong.",
+          isError: true,
+          retryInstruction: instruction,
+        },
+      ]);
+      return;
+    }
+
+    setMessages((prev) => [
+      ...prev,
+      { id: prev.length, role: "assistant", text: response.reply as string, insertable: true },
+    ]);
+  }
+
   async function handleSend() {
     const text = input.trim();
     if (!text || isLoading) return;
@@ -64,19 +126,26 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
 
     const response = await requestReply(thread, text);
     setIsLoading(false);
+    pushResponse(text, response);
+  }
 
-    if (response.error || !response.reply) {
+  async function handleRetry(message: ChatMessage) {
+    if (!message.retryInstruction || isLoading) return;
+    setIsLoading(true);
+    const thread = getThreadContext();
+    const response = await requestReply(thread, message.retryInstruction);
+    setIsLoading(false);
+    pushResponse(message.retryInstruction, response);
+  }
+
+  async function handleUpgrade() {
+    const response = await requestCheckout();
+    if (response.error) {
       setMessages((prev) => [
         ...prev,
-        { id: prev.length, role: "assistant", text: response.error ?? "Something went wrong.", isError: true },
+        { id: prev.length, role: "assistant", text: response.error as string, isError: true },
       ]);
-      return;
     }
-
-    setMessages((prev) => [
-      ...prev,
-      { id: prev.length, role: "assistant", text: response.reply as string, insertable: true },
-    ]);
   }
 
   function handleInsert(message: ChatMessage) {
@@ -117,11 +186,18 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
               <div key={m.id} className={`mp-message mp-message-${m.role}${m.isError ? " mp-message-error" : ""}`}>
                 <div>{m.text}</div>
                 {m.insertable && (
-                  <button
-                    className="mp-insert"
-                    onClick={() => handleInsert(m)}
-                  >
+                  <button className="mp-insert" onClick={() => handleInsert(m)}>
                     {insertedId === m.id ? "Inserted" : "Insert into Reply"}
+                  </button>
+                )}
+                {m.paywall && (
+                  <button className="mp-insert" onClick={handleUpgrade}>
+                    Upgrade
+                  </button>
+                )}
+                {m.retryInstruction && (
+                  <button className="mp-insert" onClick={() => handleRetry(m)} disabled={isLoading}>
+                    Retry
                   </button>
                 )}
               </div>

@@ -202,4 +202,94 @@ export const panelStyles = `
     color: #a1a1aa;
     cursor: default;
   }
+
+  @media (prefers-color-scheme: dark) {
+    .mp-fab {
+      background: #f5f5f5;
+      color: #111111;
+    }
+
+    .mp-fab:hover {
+      background: #e4e4e7;
+    }
+
+    .mp-panel {
+      background: #18181b;
+      border-color: #27272a;
+    }
+
+    .mp-header {
+      background: #18181b;
+      color: #f5f5f5;
+      border-bottom-color: #27272a;
+    }
+
+    .mp-close {
+      color: #a1a1aa;
+    }
+
+    .mp-close:hover {
+      background: #27272a;
+      color: #f5f5f5;
+    }
+
+    .mp-messages {
+      background: #101012;
+    }
+
+    .mp-message-assistant {
+      background: #18181b;
+      border-color: #27272a;
+      color: #f5f5f5;
+    }
+
+    .mp-message-user {
+      background: #f5f5f5;
+      color: #111111;
+    }
+
+    .mp-message-error {
+      border-color: #f87171;
+      color: #fca5a5;
+    }
+
+    .mp-insert {
+      border-color: #f5f5f5;
+      color: #f5f5f5;
+    }
+
+    .mp-insert:hover {
+      background: #f5f5f5;
+      color: #111111;
+    }
+
+    .mp-input-row {
+      background: #18181b;
+      border-top-color: #27272a;
+    }
+
+    .mp-input {
+      background: #101012;
+      border-color: #27272a;
+      color: #f5f5f5;
+    }
+
+    .mp-input:focus {
+      border-color: #f5f5f5;
+    }
+
+    .mp-send {
+      background: #f5f5f5;
+      color: #111111;
+    }
+
+    .mp-send:hover:not(:disabled) {
+      background: #e4e4e7;
+    }
+
+    .mp-send:disabled {
+      background: #27272a;
+      color: #52525b;
+    }
+  }
 `;
