@@ -6,7 +6,11 @@ import { requireEntitlement } from "../middleware/entitlement.js";
 export const generateRouter = Router();
 
 generateRouter.post("/", requireAuth, requireEntitlement, async (req, res) => {
-  const { thread, instruction } = req.body as { thread?: string; instruction?: string };
+  const { thread, instruction, history } = req.body as {
+    thread?: string;
+    instruction?: string;
+    history?: { role: "user" | "assistant"; content: string }[];
+  };
 
   if (!instruction || typeof instruction !== "string") {
     res.status(400).json({ error: "Missing 'instruction' in request body" });
@@ -14,7 +18,7 @@ generateRouter.post("/", requireAuth, requireEntitlement, async (req, res) => {
   }
 
   try {
-    const reply = await generateReply(thread ?? "", instruction);
+    const reply = await generateReply(thread ?? "", instruction, Array.isArray(history) ? history : []);
     res.json({ reply });
   } catch (err) {
     console.error("generateReply failed:", err);

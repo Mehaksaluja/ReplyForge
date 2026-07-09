@@ -1,7 +1,13 @@
+export interface HistoryTurn {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export interface GenerateRequestMessage {
   type: "GENERATE_REPLY";
   thread: string;
   instruction: string;
+  history: HistoryTurn[];
 }
 
 export interface GenerateResponseMessage {

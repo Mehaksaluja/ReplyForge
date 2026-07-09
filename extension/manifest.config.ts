@@ -5,8 +5,18 @@ export default defineManifest({
   name: "ReplyForge",
   version: "0.1.0",
   description: "Chat with your email, right inside Gmail.",
+  icons: {
+    "16": "public/icons/icon16.png",
+    "48": "public/icons/icon48.png",
+    "128": "public/icons/icon128.png",
+  },
   action: {
     default_title: "ReplyForge",
+    default_icon: {
+      "16": "public/icons/icon16.png",
+      "48": "public/icons/icon48.png",
+      "128": "public/icons/icon128.png",
+    },
   },
   background: {
     service_worker: "src/background/service-worker.ts",

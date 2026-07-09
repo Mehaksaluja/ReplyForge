@@ -5,6 +5,7 @@ import type {
   CreateCheckoutMessage,
   CreateCheckoutResponseMessage,
   TogglePanelMessage,
+  HistoryTurn,
 } from "../types";
 
 interface ChatMessage {
@@ -40,13 +41,27 @@ function CloseIcon({ size = 16 }: { size?: number }) {
   );
 }
 
-function requestReply(thread: string, instruction: string): Promise<GenerateResponseMessage> {
-  const message: GenerateRequestMessage = { type: "GENERATE_REPLY", thread, instruction };
+function requestReply(
+  thread: string,
+  instruction: string,
+  history: HistoryTurn[]
+): Promise<GenerateResponseMessage> {
+  const message: GenerateRequestMessage = { type: "GENERATE_REPLY", thread, instruction, history };
   return new Promise((resolve) => {
     chrome.runtime.sendMessage(message, (response: GenerateResponseMessage) => {
       resolve(response ?? { error: "No response from extension background." });
     });
   });
+}
+
+// The panel keeps the AI's prior drafts and instructions as real conversation
+// history so follow-ups like "remove that line" have something to refer to.
+// Error/paywall messages are excluded since they were never part of what the
+// model actually said.
+function buildHistory(messages: ChatMessage[]): HistoryTurn[] {
+  return messages
+    .filter((m) => m.id !== INTRO_MESSAGE.id && !m.isError)
+    .map((m) => ({ role: m.role, content: m.text }));
 }
 
 function requestCheckout(): Promise<CreateCheckoutResponseMessage> {
@@ -78,6 +93,18 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
     }
     chrome.runtime.onMessage.addListener(handleRuntimeMessage);
     return () => chrome.runtime.onMessage.removeListener(handleRuntimeMessage);
+  }, []);
+
+  useEffect(() => {
+    // Gmail is a single-page app that switches threads by changing the URL
+    // hash rather than navigating. Conversation history must not leak from
+    // one email into another, so wipe it whenever Gmail moves to a different
+    // thread (or back to the inbox list).
+    function handleHashChange() {
+      setMessages([INTRO_MESSAGE]);
+    }
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
   function pushResponse(instruction: string, response: GenerateResponseMessage) {
@@ -120,11 +147,12 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
     if (!text || isLoading) return;
 
     const thread = getThreadContext();
+    const history = buildHistory(messages);
     setMessages((prev) => [...prev, { id: prev.length, role: "user", text }]);
     setInput("");
     setIsLoading(true);
 
-    const response = await requestReply(thread, text);
+    const response = await requestReply(thread, text, history);
     setIsLoading(false);
     pushResponse(text, response);
   }
@@ -133,7 +161,8 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
     if (!message.retryInstruction || isLoading) return;
     setIsLoading(true);
     const thread = getThreadContext();
-    const response = await requestReply(thread, message.retryInstruction);
+    const history = buildHistory(messages);
+    const response = await requestReply(thread, message.retryInstruction, history);
     setIsLoading(false);
     pushResponse(message.retryInstruction, response);
   }

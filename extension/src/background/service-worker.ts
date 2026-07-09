@@ -44,6 +44,7 @@ chrome.runtime.onMessage.addListener(
           const res = await authorizedFetch("/generate", {
             thread: message.thread,
             instruction: message.instruction,
+            history: message.history,
           });
           const data = await res.json();
           if (!res.ok) {

@@ -89,6 +89,23 @@ function findAnchorMessageIndex(composeBox: HTMLElement, bodies: HTMLElement[]):
 }
 
 /**
+ * Gmail's dark theme is a setting inside Gmail itself, independent of the
+ * OS/browser dark mode preference — a user can have a dark OS with Gmail set
+ * to its white theme, or vice versa. `prefers-color-scheme` only reflects the
+ * OS setting, so it's the wrong signal for matching Gmail's actual on-screen
+ * theme. Reading the real rendered background color of the page is reliable
+ * regardless of which internal class name Gmail happens to use this month.
+ */
+export function isGmailDarkTheme(): boolean {
+  const bg = getComputedStyle(document.body).backgroundColor;
+  const channels = bg.match(/[\d.]+/g);
+  if (!channels || channels.length < 3) return false;
+  const [r, g, b] = channels.map(Number);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance < 0.5;
+}
+
+/**
  * Writes text into the most recently opened compose/reply box. We use
  * execCommand("insertText") instead of setting innerText directly — Gmail's
  * own JS (draft autosave, enabling the Send button) listens for the input

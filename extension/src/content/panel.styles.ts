@@ -11,10 +11,10 @@ export const panelStyles = `
     height: 52px;
     border-radius: 50%;
     border: none;
-    background: #111111;
+    background: #ea580c;
     color: #ffffff;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
     z-index: 999999;
     display: flex;
     align-items: center;
@@ -23,7 +23,7 @@ export const panelStyles = `
   }
 
   .rf-fab:hover {
-    background: #2a2a2a;
+    background: #c2410c;
     transform: scale(1.06);
   }
 
@@ -101,7 +101,7 @@ export const panelStyles = `
   }
 
   .rf-message-user {
-    background: #111111;
+    background: #ea580c;
     color: #ffffff;
     align-self: flex-end;
   }
@@ -115,8 +115,8 @@ export const panelStyles = `
     margin-top: 8px;
     display: block;
     background: transparent;
-    border: 1px solid #111111;
-    color: #111111;
+    border: 1px solid #ea580c;
+    color: #ea580c;
     border-radius: 6px;
     padding: 4px 10px;
     font-size: 12px;
@@ -125,7 +125,7 @@ export const panelStyles = `
   }
 
   .rf-insert:hover {
-    background: #111111;
+    background: #ea580c;
     color: #ffffff;
   }
 
@@ -179,11 +179,11 @@ export const panelStyles = `
 
   .rf-input:focus {
     outline: none;
-    border-color: #111111;
+    border-color: #ea580c;
   }
 
   .rf-send {
-    background: #111111;
+    background: #ea580c;
     color: #ffffff;
     border: none;
     border-radius: 8px;
@@ -194,7 +194,7 @@ export const panelStyles = `
   }
 
   .rf-send:hover:not(:disabled) {
-    background: #2a2a2a;
+    background: #c2410c;
   }
 
   .rf-send:disabled {
@@ -203,93 +203,54 @@ export const panelStyles = `
     cursor: default;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .rf-fab {
-      background: #f5f5f5;
-      color: #111111;
-    }
+  :host([data-theme="dark"]) .rf-panel {
+    background: #18181b;
+    border-color: #27272a;
+  }
 
-    .rf-fab:hover {
-      background: #e4e4e7;
-    }
+  :host([data-theme="dark"]) .rf-header {
+    background: #18181b;
+    color: #f5f5f5;
+    border-bottom-color: #27272a;
+  }
 
-    .rf-panel {
-      background: #18181b;
-      border-color: #27272a;
-    }
+  :host([data-theme="dark"]) .rf-close {
+    color: #a1a1aa;
+  }
 
-    .rf-header {
-      background: #18181b;
-      color: #f5f5f5;
-      border-bottom-color: #27272a;
-    }
+  :host([data-theme="dark"]) .rf-close:hover {
+    background: #27272a;
+    color: #f5f5f5;
+  }
 
-    .rf-close {
-      color: #a1a1aa;
-    }
+  :host([data-theme="dark"]) .rf-messages {
+    background: #101012;
+  }
 
-    .rf-close:hover {
-      background: #27272a;
-      color: #f5f5f5;
-    }
+  :host([data-theme="dark"]) .rf-message-assistant {
+    background: #18181b;
+    border-color: #27272a;
+    color: #f5f5f5;
+  }
 
-    .rf-messages {
-      background: #101012;
-    }
+  :host([data-theme="dark"]) .rf-message-error {
+    border-color: #f87171;
+    color: #fca5a5;
+  }
 
-    .rf-message-assistant {
-      background: #18181b;
-      border-color: #27272a;
-      color: #f5f5f5;
-    }
+  :host([data-theme="dark"]) .rf-input-row {
+    background: #18181b;
+    border-top-color: #27272a;
+  }
 
-    .rf-message-user {
-      background: #f5f5f5;
-      color: #111111;
-    }
+  :host([data-theme="dark"]) .rf-input {
+    background: #101012;
+    border-color: #27272a;
+    color: #f5f5f5;
+  }
 
-    .rf-message-error {
-      border-color: #f87171;
-      color: #fca5a5;
-    }
-
-    .rf-insert {
-      border-color: #f5f5f5;
-      color: #f5f5f5;
-    }
-
-    .rf-insert:hover {
-      background: #f5f5f5;
-      color: #111111;
-    }
-
-    .rf-input-row {
-      background: #18181b;
-      border-top-color: #27272a;
-    }
-
-    .rf-input {
-      background: #101012;
-      border-color: #27272a;
-      color: #f5f5f5;
-    }
-
-    .rf-input:focus {
-      border-color: #f5f5f5;
-    }
-
-    .rf-send {
-      background: #f5f5f5;
-      color: #111111;
-    }
-
-    .rf-send:hover:not(:disabled) {
-      background: #e4e4e7;
-    }
-
-    .rf-send:disabled {
-      background: #27272a;
-      color: #52525b;
-    }
+  :host([data-theme="dark"]) .rf-send:disabled {
+    background: #27272a;
+    color: #52525b;
   }
 `;

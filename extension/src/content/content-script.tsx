@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { Panel } from "./Panel";
 import { panelStyles } from "./panel.styles";
-import { extractThreadText, insertReplyIntoCompose } from "./gmail-dom";
+import { extractThreadText, insertReplyIntoCompose, isGmailDarkTheme } from "./gmail-dom";
 
 function mountPanel() {
   if (document.getElementById("replyforge-root")) return;
@@ -9,6 +9,18 @@ function mountPanel() {
   const host = document.createElement("div");
   host.id = "replyforge-root";
   document.body.appendChild(host);
+
+  // Match the panel's theme to Gmail's own theme setting, not the OS/browser
+  // dark mode preference — those can disagree, and the panel should always
+  // look at home next to whatever Gmail is actually showing.
+  const applyTheme = () => {
+    host.setAttribute("data-theme", isGmailDarkTheme() ? "dark" : "light");
+  };
+  applyTheme();
+  new MutationObserver(applyTheme).observe(document.body, {
+    attributes: true,
+    attributeFilter: ["style", "class"],
+  });
 
   // Shadow DOM keeps Gmail's global CSS out of our panel, and our CSS out of
   // Gmail — the same isolation problem the old inline-positioned button ran
