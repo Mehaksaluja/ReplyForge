@@ -8,15 +8,15 @@ function ChatIcon() {
 
 export function Footer() {
   return (
-    <footer className="border-t border-neutral-200 dark:border-neutral-800">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:justify-between dark:text-neutral-500">
-        <span className="flex items-center gap-2 font-semibold text-neutral-950 dark:text-neutral-50">
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-neutral-950 text-white dark:bg-neutral-50 dark:text-neutral-950">
+    <footer className="bg-neutral-950">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:justify-between">
+        <span className="flex items-center gap-2 font-logo text-lg text-white">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-orange-600 text-white">
             <ChatIcon />
           </span>
           ReplyForge
         </span>
-        <p>© {new Date().getFullYear()} ReplyForge. Chat with your email, right inside Gmail.</p>
+        <p>© {new Date().getFullYear()} ReplyForge. Built for people who live in their inbox.</p>
       </div>
     </footer>
   );

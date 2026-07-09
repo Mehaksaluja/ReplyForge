@@ -4,12 +4,45 @@
   --font-sans:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial,
     sans-serif;
+  --font-marker: "Shantell Sans", "Comic Sans MS", cursive;
+  --font-logo: "Permanent Marker", cursive;
 }
 
 html {
-  color-scheme: light dark;
+  color-scheme: light;
 }
 
 body {
-  @apply bg-white text-neutral-950 antialiased dark:bg-neutral-950 dark:text-neutral-50;
+  @apply bg-white text-neutral-950 antialiased;
+}
+
+.bg-dot-grid {
+  background-image: radial-gradient(circle, #d4d4d4 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+}
+
+.shadow-hard {
+  box-shadow: 4px 4px 0 0 #0a0a0a;
+}
+
+.shadow-hard-lg {
+  box-shadow: 7px 7px 0 0 #0a0a0a;
+}
+
+.shadow-hard-orange {
+  box-shadow: 4px 4px 0 0 #ea580c;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--float-rotate, -3deg));
+  }
+  50% {
+    transform: translateY(-10px) rotate(var(--float-rotate, -3deg));
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
 }
