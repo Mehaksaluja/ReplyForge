@@ -2,11 +2,11 @@ import { defineManifest } from "@crxjs/vite-plugin";
 
 export default defineManifest({
   manifest_version: 3,
-  name: "MailPilot",
+  name: "ReplyForge",
   version: "0.1.0",
   description: "Chat with your email, right inside Gmail.",
   action: {
-    default_title: "MailPilot",
+    default_title: "ReplyForge",
   },
   background: {
     service_worker: "src/background/service-worker.ts",
@@ -38,7 +38,7 @@ export default defineManifest({
         default: "Ctrl+Shift+M",
         mac: "Command+Shift+M",
       },
-      description: "Toggle the MailPilot panel",
+      description: "Toggle the ReplyForge panel",
     },
   },
 });

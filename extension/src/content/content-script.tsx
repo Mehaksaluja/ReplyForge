@@ -4,10 +4,10 @@ import { panelStyles } from "./panel.styles";
 import { extractThreadText, insertReplyIntoCompose } from "./gmail-dom";
 
 function mountPanel() {
-  if (document.getElementById("mailpilot-root")) return;
+  if (document.getElementById("replyforge-root")) return;
 
   const host = document.createElement("div");
-  host.id = "mailpilot-root";
+  host.id = "replyforge-root";
   document.body.appendChild(host);
 
   // Shadow DOM keeps Gmail's global CSS out of our panel, and our CSS out of

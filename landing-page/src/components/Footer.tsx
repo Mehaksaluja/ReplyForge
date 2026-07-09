@@ -14,9 +14,9 @@ export function Footer() {
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-neutral-950 text-white dark:bg-neutral-50 dark:text-neutral-950">
             <ChatIcon />
           </span>
-          MailPilot
+          ReplyForge
         </span>
-        <p>© {new Date().getFullYear()} MailPilot. Chat with your email, right inside Gmail.</p>
+        <p>© {new Date().getFullYear()} ReplyForge. Chat with your email, right inside Gmail.</p>
       </div>
     </footer>
   );

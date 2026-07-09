@@ -14,7 +14,7 @@ export function PanelMockup() {
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-neutral-950 text-white dark:bg-neutral-50 dark:text-neutral-950">
             <ChatIcon />
           </span>
-          MailPilot
+          ReplyForge
         </span>
         <span className="h-2 w-2 rounded-full bg-neutral-300 dark:bg-neutral-700" />
       </div>

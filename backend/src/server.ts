@@ -25,5 +25,5 @@ app.get("/health", (_req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`MailPilot backend listening on http://localhost:${port}`);
+  console.log(`ReplyForge backend listening on http://localhost:${port}`);
 });

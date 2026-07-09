@@ -1,4 +1,4 @@
-const PROCESSED_ATTR = "data-mailpilot-injected";
+const PROCESSED_ATTR = "data-replyforge-injected";
 
 /**
  * Gmail's compose/reply text area has no stable class name, but it has always

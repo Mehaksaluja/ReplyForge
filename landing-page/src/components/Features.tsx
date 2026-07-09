@@ -39,7 +39,7 @@ const features: { icon: ReactNode; title: string; description: string }[] = [
     icon: <IconThread />,
     title: "Knows which message you're replying to",
     description:
-      "Click Reply on any message in a long thread — MailPilot tracks exactly which one you're answering, not just the latest.",
+      "Click Reply on any message in a long thread — ReplyForge tracks exactly which one you're answering, not just the latest.",
   },
   {
     icon: <IconShield />,

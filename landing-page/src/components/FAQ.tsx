@@ -2,7 +2,7 @@ const faqs = [
   {
     question: "Is my email data stored anywhere?",
     answer:
-      "No. MailPilot sends only the thread text needed to generate a reply — nothing is stored on our servers.",
+      "No. ReplyForge sends only the thread text needed to generate a reply — nothing is stored on our servers.",
   },
   {
     question: "Does it work with any Gmail account?",

@@ -9,7 +9,7 @@ import type {
 const BACKEND_BASE = "http://localhost:3000";
 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("MailPilot installed");
+  console.log("ReplyForge installed");
 });
 
 async function getAuthToken(interactive: boolean): Promise<string> {
@@ -54,7 +54,7 @@ chrome.runtime.onMessage.addListener(
           const response: GenerateResponseMessage = { reply: data.reply };
           sendResponse(response);
         } catch (err) {
-          console.error("MailPilot: backend request failed", err);
+          console.error("ReplyForge: backend request failed", err);
           const response: GenerateResponseMessage = {
             error: "Could not reach the backend. Is it running?",
           };
@@ -80,7 +80,7 @@ chrome.runtime.onMessage.addListener(
           const response: CreateCheckoutResponseMessage = { url: data.url };
           sendResponse(response);
         } catch (err) {
-          console.error("MailPilot: checkout request failed", err);
+          console.error("ReplyForge: checkout request failed", err);
           const response: CreateCheckoutResponseMessage = {
             error: "Could not reach the backend. Is it running?",
           };

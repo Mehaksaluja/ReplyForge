@@ -1,9 +1,9 @@
 export const panelStyles = `
-  :host, .mp-fab, .mp-panel {
+  :host, .rf-fab, .rf-panel {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
   }
 
-  .mp-fab {
+  .rf-fab {
     position: fixed;
     bottom: 24px;
     right: 24px;
@@ -22,12 +22,12 @@ export const panelStyles = `
     transition: transform 0.15s ease, background 0.15s ease;
   }
 
-  .mp-fab:hover {
+  .rf-fab:hover {
     background: #2a2a2a;
     transform: scale(1.06);
   }
 
-  .mp-panel {
+  .rf-panel {
     position: fixed;
     bottom: 88px;
     right: 24px;
@@ -43,7 +43,7 @@ export const panelStyles = `
     z-index: 999999;
   }
 
-  .mp-header {
+  .rf-header {
     background: #ffffff;
     color: #111111;
     padding: 14px 16px;
@@ -56,7 +56,7 @@ export const panelStyles = `
     border-bottom: 1px solid #e4e4e7;
   }
 
-  .mp-close {
+  .rf-close {
     background: transparent;
     border: none;
     color: #71717a;
@@ -68,12 +68,12 @@ export const panelStyles = `
     border-radius: 6px;
   }
 
-  .mp-close:hover {
+  .rf-close:hover {
     background: #f4f4f5;
     color: #111111;
   }
 
-  .mp-messages {
+  .rf-messages {
     flex: 1;
     overflow-y: auto;
     padding: 12px;
@@ -84,7 +84,7 @@ export const panelStyles = `
     background: #fafafa;
   }
 
-  .mp-message {
+  .rf-message {
     padding: 8px 12px;
     border-radius: 10px;
     font-size: 13px;
@@ -93,25 +93,25 @@ export const panelStyles = `
     white-space: pre-wrap;
   }
 
-  .mp-message-assistant {
+  .rf-message-assistant {
     background: #ffffff;
     border: 1px solid #e4e4e7;
     color: #111111;
     align-self: flex-start;
   }
 
-  .mp-message-user {
+  .rf-message-user {
     background: #111111;
     color: #ffffff;
     align-self: flex-end;
   }
 
-  .mp-message-error {
+  .rf-message-error {
     border-color: #dc2626;
     color: #991b1b;
   }
 
-  .mp-insert {
+  .rf-insert {
     margin-top: 8px;
     display: block;
     background: transparent;
@@ -124,40 +124,40 @@ export const panelStyles = `
     cursor: pointer;
   }
 
-  .mp-insert:hover {
+  .rf-insert:hover {
     background: #111111;
     color: #ffffff;
   }
 
-  .mp-typing {
+  .rf-typing {
     display: flex;
     align-items: center;
     gap: 4px;
     padding: 12px;
   }
 
-  .mp-typing span {
+  .rf-typing span {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: #a1a1aa;
-    animation: mp-blink 1.2s infinite ease-in-out;
+    animation: rf-blink 1.2s infinite ease-in-out;
   }
 
-  .mp-typing span:nth-child(2) {
+  .rf-typing span:nth-child(2) {
     animation-delay: 0.2s;
   }
 
-  .mp-typing span:nth-child(3) {
+  .rf-typing span:nth-child(3) {
     animation-delay: 0.4s;
   }
 
-  @keyframes mp-blink {
+  @keyframes rf-blink {
     0%, 80%, 100% { opacity: 0.3; }
     40% { opacity: 1; }
   }
 
-  .mp-input-row {
+  .rf-input-row {
     display: flex;
     gap: 8px;
     padding: 10px;
@@ -165,7 +165,7 @@ export const panelStyles = `
     background: #ffffff;
   }
 
-  .mp-input {
+  .rf-input {
     flex: 1;
     resize: none;
     border: 1px solid #e4e4e7;
@@ -177,12 +177,12 @@ export const panelStyles = `
     color: #111111;
   }
 
-  .mp-input:focus {
+  .rf-input:focus {
     outline: none;
     border-color: #111111;
   }
 
-  .mp-send {
+  .rf-send {
     background: #111111;
     color: #ffffff;
     border: none;
@@ -193,101 +193,101 @@ export const panelStyles = `
     cursor: pointer;
   }
 
-  .mp-send:hover:not(:disabled) {
+  .rf-send:hover:not(:disabled) {
     background: #2a2a2a;
   }
 
-  .mp-send:disabled {
+  .rf-send:disabled {
     background: #e4e4e7;
     color: #a1a1aa;
     cursor: default;
   }
 
   @media (prefers-color-scheme: dark) {
-    .mp-fab {
+    .rf-fab {
       background: #f5f5f5;
       color: #111111;
     }
 
-    .mp-fab:hover {
+    .rf-fab:hover {
       background: #e4e4e7;
     }
 
-    .mp-panel {
+    .rf-panel {
       background: #18181b;
       border-color: #27272a;
     }
 
-    .mp-header {
+    .rf-header {
       background: #18181b;
       color: #f5f5f5;
       border-bottom-color: #27272a;
     }
 
-    .mp-close {
+    .rf-close {
       color: #a1a1aa;
     }
 
-    .mp-close:hover {
+    .rf-close:hover {
       background: #27272a;
       color: #f5f5f5;
     }
 
-    .mp-messages {
+    .rf-messages {
       background: #101012;
     }
 
-    .mp-message-assistant {
+    .rf-message-assistant {
       background: #18181b;
       border-color: #27272a;
       color: #f5f5f5;
     }
 
-    .mp-message-user {
+    .rf-message-user {
       background: #f5f5f5;
       color: #111111;
     }
 
-    .mp-message-error {
+    .rf-message-error {
       border-color: #f87171;
       color: #fca5a5;
     }
 
-    .mp-insert {
+    .rf-insert {
       border-color: #f5f5f5;
       color: #f5f5f5;
     }
 
-    .mp-insert:hover {
+    .rf-insert:hover {
       background: #f5f5f5;
       color: #111111;
     }
 
-    .mp-input-row {
+    .rf-input-row {
       background: #18181b;
       border-top-color: #27272a;
     }
 
-    .mp-input {
+    .rf-input {
       background: #101012;
       border-color: #27272a;
       color: #f5f5f5;
     }
 
-    .mp-input:focus {
+    .rf-input:focus {
       border-color: #f5f5f5;
     }
 
-    .mp-send {
+    .rf-send {
       background: #f5f5f5;
       color: #111111;
     }
 
-    .mp-send:hover:not(:disabled) {
+    .rf-send:hover:not(:disabled) {
       background: #e4e4e7;
     }
 
-    .mp-send:disabled {
+    .rf-send:disabled {
       background: #27272a;
       color: #52525b;
     }

@@ -20,7 +20,7 @@ interface ChatMessage {
 const INTRO_MESSAGE: ChatMessage = {
   id: 0,
   role: "assistant",
-  text: 'Hi! I\'m MailPilot. Open an email and tell me what to do — e.g. "accept politely", "tell them I\'ll send it tomorrow", or "say no politely" — and I\'ll write the reply for you.',
+  text: 'Hi! I\'m ReplyForge. Open an email and tell me what to do — e.g. "accept politely", "tell them I\'ll send it tomorrow", or "say no politely" — and I\'ll write the reply for you.',
 };
 
 function ChatIcon() {
@@ -168,42 +168,42 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
 
   return (
     <>
-      <button className="mp-fab" onClick={() => setIsOpen((v) => !v)} aria-label="Open MailPilot">
+      <button className="rf-fab" onClick={() => setIsOpen((v) => !v)} aria-label="Open ReplyForge">
         {isOpen ? <CloseIcon size={20} /> : <ChatIcon />}
       </button>
 
       {isOpen && (
-        <div className="mp-panel">
-          <div className="mp-header">
-            <span>MailPilot</span>
-            <button className="mp-close" onClick={() => setIsOpen(false)} aria-label="Close">
+        <div className="rf-panel">
+          <div className="rf-header">
+            <span>ReplyForge</span>
+            <button className="rf-close" onClick={() => setIsOpen(false)} aria-label="Close">
               <CloseIcon />
             </button>
           </div>
 
-          <div className="mp-messages">
+          <div className="rf-messages">
             {messages.map((m) => (
-              <div key={m.id} className={`mp-message mp-message-${m.role}${m.isError ? " mp-message-error" : ""}`}>
+              <div key={m.id} className={`rf-message rf-message-${m.role}${m.isError ? " rf-message-error" : ""}`}>
                 <div>{m.text}</div>
                 {m.insertable && (
-                  <button className="mp-insert" onClick={() => handleInsert(m)}>
+                  <button className="rf-insert" onClick={() => handleInsert(m)}>
                     {insertedId === m.id ? "Inserted" : "Insert into Reply"}
                   </button>
                 )}
                 {m.paywall && (
-                  <button className="mp-insert" onClick={handleUpgrade}>
+                  <button className="rf-insert" onClick={handleUpgrade}>
                     Upgrade
                   </button>
                 )}
                 {m.retryInstruction && (
-                  <button className="mp-insert" onClick={() => handleRetry(m)} disabled={isLoading}>
+                  <button className="rf-insert" onClick={() => handleRetry(m)} disabled={isLoading}>
                     Retry
                   </button>
                 )}
               </div>
             ))}
             {isLoading && (
-              <div className="mp-message mp-message-assistant mp-typing">
+              <div className="rf-message rf-message-assistant rf-typing">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -211,9 +211,9 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
             )}
           </div>
 
-          <div className="mp-input-row">
+          <div className="rf-input-row">
             <textarea
-              className="mp-input"
+              className="rf-input"
               placeholder="Tell me what to reply..."
               value={input}
               disabled={isLoading}
@@ -225,7 +225,7 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
                 }
               }}
             />
-            <button className="mp-send" onClick={handleSend} disabled={!input.trim() || isLoading}>
+            <button className="rf-send" onClick={handleSend} disabled={!input.trim() || isLoading}>
               Send
             </button>
           </div>

@@ -21,7 +21,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-neutral-600 dark:text-neutral-400">
-            MailPilot is a chat panel that lives right inside Gmail. Tell it what to
+            ReplyForge is a chat panel that lives right inside Gmail. Tell it what to
             say — "reject politely", "tell them I'll send it Friday" — and it writes
             the reply. No more copy-pasting into ChatGPT.
           </p>

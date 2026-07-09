@@ -40,7 +40,7 @@ export function Nav() {
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-950 text-white dark:bg-neutral-50 dark:text-neutral-950">
             <ChatIcon />
           </span>
-          MailPilot
+          ReplyForge
         </a>
 
         <nav className="hidden items-center gap-8 text-sm font-medium text-neutral-600 md:flex dark:text-neutral-400">
