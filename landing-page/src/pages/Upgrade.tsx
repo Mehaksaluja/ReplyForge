@@ -58,7 +58,7 @@ export function Upgrade() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto flex min-h-screen max-w-lg flex-col justify-center px-6 py-16">
-        <a href="/" className="mb-10 font-logo text-xl text-neutral-950">
+        <a href="/" className="mb-10 font-logo text-xl font-bold tracking-tight text-neutral-950">
           ReplyForge
         </a>
 

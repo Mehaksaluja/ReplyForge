@@ -10,7 +10,7 @@ export function Footer() {
   return (
     <footer className="bg-neutral-950">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:justify-between">
-        <span className="flex items-center gap-2 font-logo text-lg text-white">
+        <span className="flex items-center gap-2 font-logo text-lg font-bold tracking-tight text-white">
           <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-orange-600 text-white">
             <ChatIcon />
           </span>

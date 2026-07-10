@@ -17,7 +17,7 @@ export function PanelMockup() {
       </div>
 
       <div className="flex items-center justify-between border-b-2 border-neutral-950 px-4 py-3">
-        <span className="flex items-center gap-2 font-logo text-base text-neutral-950">
+        <span className="flex items-center gap-2 font-logo text-base font-bold tracking-tight text-neutral-950">
           <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-neutral-950 bg-orange-600 text-white">
             <ChatIcon />
           </span>

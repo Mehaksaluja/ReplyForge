@@ -48,7 +48,7 @@ export function Nav() {
           >
             <ChatIcon />
           </motion.span>
-          <span className="font-logo text-xl text-neutral-950">ReplyForge</span>
+          <span className="font-logo text-xl font-bold tracking-tight text-neutral-950">ReplyForge</span>
         </a>
 
         <nav className="hidden items-center gap-8 font-marker text-base font-bold text-neutral-700 md:flex">
