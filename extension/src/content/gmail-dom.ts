@@ -106,7 +106,54 @@ export function isGmailDarkTheme(): boolean {
 }
 
 /**
- * Writes text into the most recently opened compose/reply box. We use
+ * Clicks Gmail's native Reply control under the most recent message in the
+ * thread — the same message extractThreadText() falls back to as the reply
+ * target when no compose box is already open. Only the expanded message
+ * (normally the last one) renders Reply/Reply all/Forward controls, and like
+ * the "Message Body" selector above, this is keyed off aria-label rather
+ * than an unstable class name (English-language Gmail only, for now).
+ */
+function openReplyForLastMessage(): boolean {
+  const bodies = Array.from(document.querySelectorAll<HTMLElement>(".a3s.aiL"));
+  const lastBody = bodies[bodies.length - 1];
+  const container = lastBody?.closest("[role=\"listitem\"]");
+  const replyButton = container?.querySelector<HTMLElement>('[aria-label="Reply"]');
+  if (!replyButton) return false;
+  replyButton.click();
+  return true;
+}
+
+/** Resolves with the newly-opened compose box, or null if none appears within `timeoutMs`. */
+function waitForComposeBox(timeoutMs = 3000): Promise<HTMLElement | null> {
+  const existing = findComposeBoxes();
+  if (existing.length > 0) return Promise.resolve(existing[existing.length - 1]);
+
+  return new Promise((resolve) => {
+    let settled = false;
+    const observer = new MutationObserver(() => {
+      const boxes = findComposeBoxes();
+      if (boxes.length > 0 && !settled) {
+        settled = true;
+        clearTimeout(timeout);
+        observer.disconnect();
+        resolve(boxes[boxes.length - 1]);
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    const timeout = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        observer.disconnect();
+        resolve(null);
+      }
+    }, timeoutMs);
+  });
+}
+
+/**
+ * Writes text into the most recently opened compose/reply box, opening one
+ * automatically (via Gmail's own Reply control) if none is open yet. We use
  * execCommand("insertText") instead of setting innerText directly — Gmail's
  * own JS (draft autosave, enabling the Send button) listens for the input
  * events that execCommand fires; a direct property write doesn't trigger
@@ -114,12 +161,26 @@ export function isGmailDarkTheme(): boolean {
  * deprecated but still functions in Chrome and is the standard trick used by
  * Gmail-integration extensions for exactly this reason.
  */
-export function insertReplyIntoCompose(text: string): boolean {
-  const boxes = findComposeBoxes();
-  const target = boxes[boxes.length - 1];
-  if (!target) return false;
+export async function insertReplyIntoCompose(text: string): Promise<boolean> {
+  let boxes = findComposeBoxes();
+  if (boxes.length === 0) {
+    if (!openReplyForLastMessage()) return false;
+    const opened = await waitForComposeBox();
+    if (!opened) return false;
+    boxes = [opened];
+  }
 
+  const target = boxes[boxes.length - 1];
   target.focus();
+
+  // Select whatever's already in the box first, so insertText replaces it
+  // instead of dropping the new reply in wherever the cursor happens to be.
+  const range = document.createRange();
+  range.selectNodeContents(target);
+  const selection = window.getSelection();
+  selection?.removeAllRanges();
+  selection?.addRange(range);
+
   const inserted = document.execCommand("insertText", false, text);
   if (!inserted) {
     target.innerText = text;

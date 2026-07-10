@@ -70,7 +70,7 @@ function openUpgradePage() {
 
 interface PanelProps {
   getThreadContext: () => string;
-  onInsert: (text: string) => boolean;
+  onInsert: (text: string) => Promise<boolean>;
 }
 
 export function Panel({ getThreadContext, onInsert }: PanelProps) {
@@ -79,6 +79,7 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [insertedId, setInsertedId] = useState<number | null>(null);
+  const [insertingId, setInsertingId] = useState<number | null>(null);
 
   useEffect(() => {
     function handleRuntimeMessage(message: TogglePanelMessage) {
@@ -166,8 +167,11 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
     openUpgradePage();
   }
 
-  function handleInsert(message: ChatMessage) {
-    const success = onInsert(message.text);
+  async function handleInsert(message: ChatMessage) {
+    if (insertingId !== null) return;
+    setInsertingId(message.id);
+    const success = await onInsert(message.text);
+    setInsertingId(null);
     if (success) {
       setInsertedId(message.id);
       setTimeout(() => setInsertedId((id) => (id === message.id ? null : id)), 2000);
@@ -177,7 +181,7 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
         {
           id: prev.length,
           role: "assistant",
-          text: "No open reply box found. Click Reply on an email first, then try inserting again.",
+          text: "Couldn't open a reply box for this email. Open the thread in Gmail and try again.",
           isError: true,
         },
       ]);
@@ -204,8 +208,16 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
               <div key={m.id} className={`rf-message rf-message-${m.role}${m.isError ? " rf-message-error" : ""}`}>
                 <div>{m.text}</div>
                 {m.insertable && (
-                  <button className="rf-insert" onClick={() => handleInsert(m)}>
-                    {insertedId === m.id ? "Inserted" : "Insert into Reply"}
+                  <button
+                    className="rf-insert"
+                    onClick={() => handleInsert(m)}
+                    disabled={insertingId === m.id}
+                  >
+                    {insertedId === m.id
+                      ? "Inserted"
+                      : insertingId === m.id
+                        ? "Opening reply..."
+                        : "Insert into Reply"}
                   </button>
                 )}
                 {m.paywall && (
