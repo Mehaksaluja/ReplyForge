@@ -18,6 +18,9 @@ export function Footer() {
         </span>
         <p>© {new Date().getFullYear()} ReplyForge. Built for people who live in their inbox.</p>
       </div>
+      <div className="border-t border-neutral-900 py-4 text-center text-sm text-neutral-400">
+        Built with <span aria-hidden="true" className="text-red-500">&#9829;</span> by Mehak
+      </div>
     </footer>
   );
 }

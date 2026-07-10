@@ -1,7 +1,9 @@
+import { TestingBanner } from "./components/TestingBanner";
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
 import { SocialProof } from "./components/SocialProof";
 import { HowItWorks } from "./components/HowItWorks";
+import { DemoVideo } from "./components/DemoVideo";
 import { Features } from "./components/Features";
 import { Pricing } from "./components/Pricing";
 import { FAQ } from "./components/FAQ";
@@ -16,10 +18,12 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
+      <TestingBanner />
       <Nav />
       <main>
         <Hero />
         <SocialProof />
+        <DemoVideo />
         <HowItWorks />
         <Features />
         <Pricing />
