@@ -15,13 +15,8 @@ export interface GenerateResponseMessage {
   error?: string;
 }
 
-export interface CreateCheckoutMessage {
-  type: "CREATE_CHECKOUT";
-}
-
-export interface CreateCheckoutResponseMessage {
-  url?: string;
-  error?: string;
+export interface OpenUpgradePageMessage {
+  type: "OPEN_UPGRADE_PAGE";
 }
 
 export interface TogglePanelMessage {

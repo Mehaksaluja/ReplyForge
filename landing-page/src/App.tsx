@@ -7,8 +7,13 @@ import { Pricing } from "./components/Pricing";
 import { FAQ } from "./components/FAQ";
 import { FinalCTA } from "./components/FinalCTA";
 import { Footer } from "./components/Footer";
+import { Upgrade } from "./pages/Upgrade";
 
 function App() {
+  if (window.location.pathname === "/upgrade") {
+    return <Upgrade />;
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <Nav />

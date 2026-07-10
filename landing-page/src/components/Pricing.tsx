@@ -96,11 +96,11 @@ export function Pricing() {
               </li>
             </ul>
 
-            <a href="#" className={`${ctaClass} bg-orange-600 text-white shadow-hard hover:shadow-[2px_2px_0_0_#0a0a0a]`}>
-              Add to Chrome - Free
+            <a href="/upgrade" className={`${ctaClass} bg-orange-600 text-white shadow-hard hover:shadow-[2px_2px_0_0_#0a0a0a]`}>
+              Upgrade to Pro
             </a>
             <p className="mt-3 text-center text-xs text-neutral-400">
-              Upgrade anytime from within the extension.
+              Or upgrade anytime from within the extension.
             </p>
           </motion.div>
         </div>

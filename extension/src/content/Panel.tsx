@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import type {
   GenerateRequestMessage,
   GenerateResponseMessage,
-  CreateCheckoutMessage,
-  CreateCheckoutResponseMessage,
+  OpenUpgradePageMessage,
   TogglePanelMessage,
   HistoryTurn,
 } from "../types";
@@ -21,7 +20,7 @@ interface ChatMessage {
 const INTRO_MESSAGE: ChatMessage = {
   id: 0,
   role: "assistant",
-  text: 'Hi! I\'m ReplyForge. Open an email and tell me what to do — e.g. "accept politely", "tell them I\'ll send it tomorrow", or "say no politely" — and I\'ll write the reply for you.',
+  text: 'Hi! I\'m ReplyForge. Open an email and tell me what to do, like "accept politely," "tell them I\'ll send it tomorrow," or "say no politely," and I\'ll write the reply for you.',
 };
 
 function ChatIcon() {
@@ -64,13 +63,9 @@ function buildHistory(messages: ChatMessage[]): HistoryTurn[] {
     .map((m) => ({ role: m.role, content: m.text }));
 }
 
-function requestCheckout(): Promise<CreateCheckoutResponseMessage> {
-  const message: CreateCheckoutMessage = { type: "CREATE_CHECKOUT" };
-  return new Promise((resolve) => {
-    chrome.runtime.sendMessage(message, (response: CreateCheckoutResponseMessage) => {
-      resolve(response ?? { error: "No response from extension background." });
-    });
-  });
+function openUpgradePage() {
+  const message: OpenUpgradePageMessage = { type: "OPEN_UPGRADE_PAGE" };
+  chrome.runtime.sendMessage(message);
 }
 
 interface PanelProps {
@@ -167,14 +162,8 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
     pushResponse(message.retryInstruction, response);
   }
 
-  async function handleUpgrade() {
-    const response = await requestCheckout();
-    if (response.error) {
-      setMessages((prev) => [
-        ...prev,
-        { id: prev.length, role: "assistant", text: response.error as string, isError: true },
-      ]);
-    }
+  function handleUpgrade() {
+    openUpgradePage();
   }
 
   function handleInsert(message: ChatMessage) {

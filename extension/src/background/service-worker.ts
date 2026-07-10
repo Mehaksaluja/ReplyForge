@@ -1,12 +1,12 @@
 import type {
   GenerateRequestMessage,
   GenerateResponseMessage,
-  CreateCheckoutMessage,
-  CreateCheckoutResponseMessage,
+  OpenUpgradePageMessage,
   TogglePanelMessage,
 } from "../types";
 
-const BACKEND_BASE = "http://localhost:3000";
+const BACKEND_BASE = import.meta.env.DEV ? "http://localhost:3000" : "https://ai-email-extension.onrender.com";
+const LANDING_PAGE_BASE = import.meta.env.DEV ? "http://localhost:5173" : "https://replyforge.mehakworks.com";
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log("ReplyForge installed");
@@ -37,7 +37,7 @@ async function authorizedFetch(path: string, body: unknown): Promise<Response> {
 }
 
 chrome.runtime.onMessage.addListener(
-  (message: GenerateRequestMessage | CreateCheckoutMessage, _sender, sendResponse) => {
+  (message: GenerateRequestMessage | OpenUpgradePageMessage, _sender, sendResponse) => {
     if (message.type === "GENERATE_REPLY") {
       (async () => {
         try {
@@ -65,30 +65,9 @@ chrome.runtime.onMessage.addListener(
       return true; // keep the message channel open for the async sendResponse above
     }
 
-    if (message.type === "CREATE_CHECKOUT") {
-      (async () => {
-        try {
-          const res = await authorizedFetch("/billing/create-checkout-session", {});
-          const data = await res.json();
-          if (!res.ok || !data.url) {
-            const response: CreateCheckoutResponseMessage = {
-              error: data.error ?? "Could not start checkout",
-            };
-            sendResponse(response);
-            return;
-          }
-          chrome.tabs.create({ url: data.url });
-          const response: CreateCheckoutResponseMessage = { url: data.url };
-          sendResponse(response);
-        } catch (err) {
-          console.error("ReplyForge: checkout request failed", err);
-          const response: CreateCheckoutResponseMessage = {
-            error: "Could not reach the backend. Is it running?",
-          };
-          sendResponse(response);
-        }
-      })();
-      return true;
+    if (message.type === "OPEN_UPGRADE_PAGE") {
+      chrome.tabs.create({ url: `${LANDING_PAGE_BASE}/upgrade` });
+      return false;
     }
 
     return false;

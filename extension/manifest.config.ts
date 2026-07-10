@@ -29,11 +29,7 @@ export default defineManifest({
     },
   ],
   permissions: ["identity"],
-  host_permissions: [
-    "http://localhost:3000/*",
-    // TODO: replace with your deployed Railway backend URL before shipping (see README)
-    "https://YOUR-RAILWAY-APP.up.railway.app/*",
-  ],
+  host_permissions: ["http://localhost:3000/*", "https://ai-email-extension.onrender.com/*"],
   oauth2: {
     // TODO: replace with your Google OAuth client ID (see README "Google OAuth setup")
     client_id: "296237434626-kk8h6mgq6jshfm4ehb0pduvf2d6bmss9.apps.googleusercontent.com",
