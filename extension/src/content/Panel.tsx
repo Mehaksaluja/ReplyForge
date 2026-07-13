@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import type {
   GenerateRequestMessage,
   GenerateResponseMessage,
+  GetProStatusMessage,
   OpenUpgradePageMessage,
+  ProStatusResponseMessage,
   TogglePanelMessage,
   HistoryTurn,
 } from "../types";
@@ -68,6 +70,15 @@ function openUpgradePage() {
   chrome.runtime.sendMessage(message);
 }
 
+function checkProStatus(): Promise<boolean> {
+  const message: GetProStatusMessage = { type: "GET_PRO_STATUS" };
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(message, (response?: ProStatusResponseMessage) => {
+      resolve(response?.isPro ?? false);
+    });
+  });
+}
+
 interface PanelProps {
   getThreadContext: () => string;
   onInsert: (text: string) => Promise<boolean>;
@@ -80,6 +91,7 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [insertedId, setInsertedId] = useState<number | null>(null);
   const [insertingId, setInsertingId] = useState<number | null>(null);
+  const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
     function handleRuntimeMessage(message: TogglePanelMessage) {
@@ -90,6 +102,20 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
     chrome.runtime.onMessage.addListener(handleRuntimeMessage);
     return () => chrome.runtime.onMessage.removeListener(handleRuntimeMessage);
   }, []);
+
+  useEffect(() => {
+    // Re-check on every open, not just once on mount, so upgrading in another
+    // tab (or a stale cached token) is reflected next time the panel is used
+    // rather than only after a full Gmail reload.
+    if (!isOpen) return;
+    let cancelled = false;
+    checkProStatus().then((pro) => {
+      if (!cancelled) setIsPro(pro);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     // Gmail is a single-page app that switches threads by changing the URL
@@ -197,7 +223,10 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
       {isOpen && (
         <div className="rf-panel">
           <div className="rf-header">
-            <span>ReplyForge</span>
+            <span>
+              ReplyForge
+              {isPro && <span className="rf-pro-badge">Pro</span>}
+            </span>
             <button className="rf-close" onClick={() => setIsOpen(false)} aria-label="Close">
               <CloseIcon />
             </button>

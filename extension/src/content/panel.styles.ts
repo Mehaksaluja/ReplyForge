@@ -56,6 +56,19 @@ export const panelStyles = `
     border-bottom: 1px solid #e4e4e7;
   }
 
+  .rf-pro-badge {
+    margin-left: 6px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: #ea580c;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
   .rf-close {
     background: transparent;
     border: none;

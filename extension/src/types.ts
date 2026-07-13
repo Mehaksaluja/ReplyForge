@@ -26,3 +26,11 @@ export interface TogglePanelMessage {
 export interface WarmBackendMessage {
   type: "WARM_BACKEND";
 }
+
+export interface GetProStatusMessage {
+  type: "GET_PRO_STATUS";
+}
+
+export interface ProStatusResponseMessage {
+  isPro: boolean;
+}

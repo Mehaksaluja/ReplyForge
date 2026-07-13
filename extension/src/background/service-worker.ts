@@ -1,7 +1,9 @@
 import type {
   GenerateRequestMessage,
   GenerateResponseMessage,
+  GetProStatusMessage,
   OpenUpgradePageMessage,
+  ProStatusResponseMessage,
   TogglePanelMessage,
   WarmBackendMessage,
 } from "../types";
@@ -57,13 +59,36 @@ async function authorizedFetch(path: string, body: unknown): Promise<Response> {
 
 chrome.runtime.onMessage.addListener(
   (
-    message: GenerateRequestMessage | OpenUpgradePageMessage | WarmBackendMessage,
+    message: GenerateRequestMessage | OpenUpgradePageMessage | WarmBackendMessage | GetProStatusMessage,
     _sender,
     sendResponse
   ) => {
     if (message.type === "WARM_BACKEND") {
       warmBackendIfStale();
       return false;
+    }
+
+    if (message.type === "GET_PRO_STATUS") {
+      (async () => {
+        try {
+          // Non-interactive: this just refreshes a badge, so it should never
+          // pop a sign-in prompt - if there's no cached token yet, treat the
+          // user as not-Pro rather than force a login they didn't ask for.
+          const token = await getAuthToken(false);
+          const res = await fetch(`${BACKEND_BASE}/billing/status`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (!res.ok) {
+            sendResponse({ isPro: false } satisfies ProStatusResponseMessage);
+            return;
+          }
+          const data = await res.json();
+          sendResponse({ isPro: data.subscriptionStatus === "active" } satisfies ProStatusResponseMessage);
+        } catch {
+          sendResponse({ isPro: false } satisfies ProStatusResponseMessage);
+        }
+      })();
+      return true;
     }
 
     if (message.type === "GENERATE_REPLY") {
