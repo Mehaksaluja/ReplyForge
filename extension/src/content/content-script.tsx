@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import { Panel } from "./Panel";
 import { panelStyles } from "./panel.styles";
 import { extractThreadText, insertReplyIntoCompose, isGmailDarkTheme } from "./gmail-dom";
+import type { WarmBackendMessage } from "../types";
 
 function mountPanel() {
   if (document.getElementById("replyforge-root")) return;
@@ -40,3 +41,9 @@ function mountPanel() {
 }
 
 mountPanel();
+
+// Fire-and-forget so Render's cold start (backend spins down after inactivity
+// on the free tier) happens while the user is reading, not when they hit
+// Generate. No response is expected or handled.
+const warmMessage: WarmBackendMessage = { type: "WARM_BACKEND" };
+chrome.runtime.sendMessage(warmMessage);

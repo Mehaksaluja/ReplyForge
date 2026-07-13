@@ -3,6 +3,7 @@ import type {
   GenerateResponseMessage,
   OpenUpgradePageMessage,
   TogglePanelMessage,
+  WarmBackendMessage,
 } from "../types";
 
 const BACKEND_BASE = import.meta.env.DEV ? "http://localhost:3000" : "https://ai-email-extension.onrender.com";
@@ -11,6 +12,24 @@ const LANDING_PAGE_BASE = import.meta.env.DEV ? "http://localhost:5173" : "https
 chrome.runtime.onInstalled.addListener(() => {
   console.log("ReplyForge installed");
 });
+
+// Throttle so a user with several Gmail tabs open, or who reloads often,
+// doesn't fire a fresh /health ping every single time - one ping per window
+// is plenty to keep Render from spinning the backend down.
+const WARM_PING_INTERVAL_MS = 10 * 60 * 1000;
+
+async function warmBackendIfStale(): Promise<void> {
+  const { lastWarmPing } = await chrome.storage.session.get("lastWarmPing");
+  const now = Date.now();
+  if (typeof lastWarmPing === "number" && now - lastWarmPing < WARM_PING_INTERVAL_MS) {
+    return;
+  }
+  await chrome.storage.session.set({ lastWarmPing: now });
+  fetch(`${BACKEND_BASE}/health`).catch(() => {
+    // Nothing to do with a failed warm-up ping - the real request will
+    // surface its own error if the backend is still unreachable.
+  });
+}
 
 async function getAuthToken(interactive: boolean): Promise<string> {
   const result = await chrome.identity.getAuthToken({ interactive });
@@ -37,7 +56,16 @@ async function authorizedFetch(path: string, body: unknown): Promise<Response> {
 }
 
 chrome.runtime.onMessage.addListener(
-  (message: GenerateRequestMessage | OpenUpgradePageMessage, _sender, sendResponse) => {
+  (
+    message: GenerateRequestMessage | OpenUpgradePageMessage | WarmBackendMessage,
+    _sender,
+    sendResponse
+  ) => {
+    if (message.type === "WARM_BACKEND") {
+      warmBackendIfStale();
+      return false;
+    }
+
     if (message.type === "GENERATE_REPLY") {
       (async () => {
         try {

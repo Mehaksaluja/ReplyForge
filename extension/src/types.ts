@@ -22,3 +22,7 @@ export interface OpenUpgradePageMessage {
 export interface TogglePanelMessage {
   type: "TOGGLE_PANEL";
 }
+
+export interface WarmBackendMessage {
+  type: "WARM_BACKEND";
+}
