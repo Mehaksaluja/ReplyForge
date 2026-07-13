@@ -27,7 +27,7 @@ export function FinalCTA() {
         >
           Add to Chrome - Free
         </motion.a>
-        <p className="mt-3 text-xs text-neutral-500">10 free replies. No credit card required.</p>
+        <p className="mt-3 text-xs text-neutral-500">5 free replies. No credit card required.</p>
       </motion.div>
     </section>
   );

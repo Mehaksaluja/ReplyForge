@@ -2,7 +2,7 @@ import type { Response, NextFunction } from "express";
 import { getSupabase } from "../db/supabase.js";
 import type { AuthedRequest } from "./auth.js";
 
-const FREE_REPLY_LIMIT = 10;
+const FREE_REPLY_LIMIT = 5;
 
 export async function requireEntitlement(req: AuthedRequest, res: Response, next: NextFunction) {
   const user = req.user;

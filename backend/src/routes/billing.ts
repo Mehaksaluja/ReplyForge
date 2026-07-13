@@ -18,6 +18,15 @@ function getDodoClient(): DodoPayments {
 
 export const billingRouter = Router();
 
+billingRouter.get("/status", requireAuth, (req: AuthedRequest, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    res.status(401).json({ error: "missing_token" });
+    return;
+  }
+  res.json({ subscriptionStatus: user.subscriptionStatus });
+});
+
 billingRouter.post("/create-checkout-session", requireAuth, async (req: AuthedRequest, res: Response) => {
   const user = req.user;
   if (!user) {

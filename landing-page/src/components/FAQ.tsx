@@ -16,7 +16,7 @@ const faqs = [
     answer: "Yes. Personal Gmail or Google Workspace, right in your browser.",
   },
   {
-    question: "What happens after my 10 free replies?",
+    question: "What happens after my 5 free replies?",
     answer:
       "You'll see an upgrade prompt right in the panel. Upgrade to keep going with unlimited replies.",
   },

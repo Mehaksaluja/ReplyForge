@@ -110,7 +110,7 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
         {
           id: prev.length,
           role: "assistant",
-          text: "You've used all 10 free replies. Upgrade to keep going.",
+          text: "You've used all 5 free replies. Upgrade to keep going.",
           isError: true,
           paywall: true,
         },

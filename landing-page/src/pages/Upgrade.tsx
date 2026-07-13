@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGoogleAuth } from "../lib/googleAuth";
 import { API_BASE_URL } from "../config";
 
@@ -26,10 +26,36 @@ function StatusBanner() {
   return null;
 }
 
+type PlanStatus = "unknown" | "checking" | "free" | "pro";
+
 export function Upgrade() {
   const { status, identity, error, signIn } = useGoogleAuth();
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [planStatus, setPlanStatus] = useState<PlanStatus>("unknown");
+
+  useEffect(() => {
+    if (status !== "signed-in" || !identity) {
+      setPlanStatus("unknown");
+      return;
+    }
+    let cancelled = false;
+    setPlanStatus("checking");
+    fetch(`${API_BASE_URL}/billing/status`, {
+      headers: { Authorization: `Bearer ${identity.accessToken}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return;
+        setPlanStatus(data.subscriptionStatus === "active" ? "pro" : "free");
+      })
+      .catch(() => {
+        if (!cancelled) setPlanStatus("free");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [status, identity]);
 
   async function handleUpgrade() {
     if (!identity) return;
@@ -80,7 +106,21 @@ export function Upgrade() {
             </>
           )}
 
-          {status === "signed-in" && identity && (
+          {status === "signed-in" && identity && planStatus === "checking" && (
+            <p className="text-sm font-semibold text-neutral-600">Checking your account...</p>
+          )}
+
+          {status === "signed-in" && identity && planStatus === "pro" && (
+            <>
+              <p className="text-sm font-semibold text-neutral-600">Signed in as</p>
+              <p className="mt-1 text-lg font-bold text-neutral-950">{identity.email}</p>
+              <p className="mt-3 rounded-xl border-2 border-neutral-950 bg-orange-50 px-4 py-3 text-sm font-semibold text-neutral-800">
+                You're already on ReplyForge Pro — head back to Gmail and start replying.
+              </p>
+            </>
+          )}
+
+          {status === "signed-in" && identity && planStatus === "free" && (
             <>
               <p className="text-sm font-semibold text-neutral-600">Upgrading</p>
               <p className="mt-1 text-lg font-bold text-neutral-950">{identity.email}</p>

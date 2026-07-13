@@ -64,7 +64,7 @@ export function Hero() {
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-semibold text-neutral-600">
-            <span className="flex items-center gap-1.5">✓ 10 free replies, no card required</span>
+            <span className="flex items-center gap-1.5">✓ 5 free replies, no card required</span>
             <span className="flex items-center gap-1.5">✓ Nothing stored on our servers</span>
           </div>
         </motion.div>

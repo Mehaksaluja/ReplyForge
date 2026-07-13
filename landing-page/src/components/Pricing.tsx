@@ -47,7 +47,7 @@ export function Pricing() {
               Free
             </h3>
             <p className="mt-4 text-4xl font-bold text-neutral-950">$0</p>
-            <p className="mt-1 text-sm font-semibold text-neutral-500">10 replies, forever</p>
+            <p className="mt-1 text-sm font-semibold text-neutral-500">5 replies, forever</p>
 
             <ul className="mt-8 flex flex-col gap-3">
               <PlanFeature>Knows the whole thread</PlanFeature>
