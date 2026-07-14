@@ -1,9 +1,9 @@
 import { defineManifest } from "@crxjs/vite-plugin";
 
-export default defineManifest({
+export default defineManifest(({ command }) => ({
   manifest_version: 3,
   name: "ReplyForge",
-  version: "0.1.0",
+  version: "1.0.0",
   description: "Chat with your email, right inside Gmail.",
   icons: {
     "16": "public/icons/icon16.png",
@@ -29,7 +29,10 @@ export default defineManifest({
     },
   ],
   permissions: ["identity"],
-  host_permissions: ["http://localhost:3000/*", "https://ai-email-extension.onrender.com/*"],
+  host_permissions:
+    command === "serve"
+      ? ["http://localhost:3000/*", "https://ai-email-extension.onrender.com/*"]
+      : ["https://ai-email-extension.onrender.com/*"],
   oauth2: {
     // TODO: replace with your Google OAuth client ID (see README "Google OAuth setup")
     client_id: "296237434626-kk8h6mgq6jshfm4ehb0pduvf2d6bmss9.apps.googleusercontent.com",
@@ -47,4 +50,4 @@ export default defineManifest({
       description: "Toggle the ReplyForge panel",
     },
   },
-});
+}));
