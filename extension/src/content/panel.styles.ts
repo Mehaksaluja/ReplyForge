@@ -56,6 +56,21 @@ export const panelStyles = `
     border-bottom: 1px solid #e4e4e7;
   }
 
+  .rf-title {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font: inherit;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .rf-title:hover {
+    text-decoration: underline;
+  }
+
   .rf-pro-badge {
     margin-left: 6px;
     padding: 1px 6px;

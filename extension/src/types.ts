@@ -19,6 +19,10 @@ export interface OpenUpgradePageMessage {
   type: "OPEN_UPGRADE_PAGE";
 }
 
+export interface OpenLandingPageMessage {
+  type: "OPEN_LANDING_PAGE";
+}
+
 export interface TogglePanelMessage {
   type: "TOGGLE_PANEL";
 }

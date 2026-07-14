@@ -3,6 +3,7 @@ import type {
   GenerateRequestMessage,
   GenerateResponseMessage,
   GetProStatusMessage,
+  OpenLandingPageMessage,
   OpenUpgradePageMessage,
   ProStatusResponseMessage,
   TogglePanelMessage,
@@ -67,6 +68,11 @@ function buildHistory(messages: ChatMessage[]): HistoryTurn[] {
 
 function openUpgradePage() {
   const message: OpenUpgradePageMessage = { type: "OPEN_UPGRADE_PAGE" };
+  chrome.runtime.sendMessage(message);
+}
+
+function openLandingPage() {
+  const message: OpenLandingPageMessage = { type: "OPEN_LANDING_PAGE" };
   chrome.runtime.sendMessage(message);
 }
 
@@ -223,10 +229,10 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
       {isOpen && (
         <div className="rf-panel">
           <div className="rf-header">
-            <span>
+            <button className="rf-title" onClick={openLandingPage}>
               ReplyForge
               {isPro && <span className="rf-pro-badge">Pro</span>}
-            </span>
+            </button>
             <button className="rf-close" onClick={() => setIsOpen(false)} aria-label="Close">
               <CloseIcon />
             </button>

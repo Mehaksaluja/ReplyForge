@@ -2,6 +2,7 @@ import type {
   GenerateRequestMessage,
   GenerateResponseMessage,
   GetProStatusMessage,
+  OpenLandingPageMessage,
   OpenUpgradePageMessage,
   ProStatusResponseMessage,
   TogglePanelMessage,
@@ -57,9 +58,30 @@ async function authorizedFetch(path: string, body: unknown): Promise<Response> {
   });
 }
 
+// Creates the checkout session using the same account the extension is
+// already authorized as, so the account that pays is always the account
+// that gets checked for Pro status - no separate sign-in on the landing
+// page that could pick a different Google account.
+async function getCheckoutUrl(): Promise<string> {
+  const res = await authorizedFetch("/billing/create-checkout-session", {});
+  if (!res.ok) {
+    throw new Error("Failed to create checkout session");
+  }
+  const data = await res.json();
+  if (!data.url) {
+    throw new Error("Checkout session missing url");
+  }
+  return data.url as string;
+}
+
 chrome.runtime.onMessage.addListener(
   (
-    message: GenerateRequestMessage | OpenUpgradePageMessage | WarmBackendMessage | GetProStatusMessage,
+    message:
+      | GenerateRequestMessage
+      | OpenUpgradePageMessage
+      | OpenLandingPageMessage
+      | WarmBackendMessage
+      | GetProStatusMessage,
     _sender,
     sendResponse
   ) => {
@@ -119,7 +141,20 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === "OPEN_UPGRADE_PAGE") {
-      chrome.tabs.create({ url: `${LANDING_PAGE_BASE}/upgrade` });
+      (async () => {
+        try {
+          const url = await getCheckoutUrl();
+          chrome.tabs.create({ url });
+        } catch (err) {
+          console.error("ReplyForge: checkout session failed, falling back to landing page", err);
+          chrome.tabs.create({ url: `${LANDING_PAGE_BASE}/upgrade` });
+        }
+      })();
+      return false;
+    }
+
+    if (message.type === "OPEN_LANDING_PAGE") {
+      chrome.tabs.create({ url: LANDING_PAGE_BASE });
       return false;
     }
 
