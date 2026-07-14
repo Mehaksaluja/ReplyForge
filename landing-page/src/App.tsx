@@ -10,10 +10,14 @@ import { FAQ } from "./components/FAQ";
 import { FinalCTA } from "./components/FinalCTA";
 import { Footer } from "./components/Footer";
 import { Upgrade } from "./pages/Upgrade";
+import { Privacy } from "./pages/Privacy";
 
 function App() {
   if (window.location.pathname === "/upgrade") {
     return <Upgrade />;
+  }
+  if (window.location.pathname === "/privacy") {
+    return <Privacy />;
   }
 
   return (

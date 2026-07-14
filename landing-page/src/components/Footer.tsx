@@ -17,6 +17,9 @@ export function Footer() {
           ReplyForge
         </span>
         <p>© {new Date().getFullYear()} ReplyForge. Built for people who live in their inbox.</p>
+        <a href="/privacy" className="font-semibold text-neutral-400 underline hover:text-white">
+          Privacy Policy
+        </a>
       </div>
       <div className="border-t border-neutral-900 py-4 text-center text-sm text-neutral-400">
         Built with <span aria-hidden="true" className="text-red-500">&#9829;</span> by Mehak
