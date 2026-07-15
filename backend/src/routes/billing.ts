@@ -60,6 +60,29 @@ billingRouter.post("/create-checkout-session", requireAuth, async (req: AuthedRe
   }
 });
 
+billingRouter.get("/portal-session", requireAuth, async (req: AuthedRequest, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    res.status(401).json({ error: "missing_token" });
+    return;
+  }
+  if (user.subscriptionStatus !== "active" || !user.paymentCustomerId) {
+    res.status(400).json({ error: "No active subscription to manage" });
+    return;
+  }
+
+  try {
+    const dodo = getDodoClient();
+    const session = await dodo.customers.customerPortal.create(user.paymentCustomerId, {
+      return_url: process.env.DODO_PAYMENTS_PORTAL_RETURN_URL ?? "https://example.com",
+    });
+    res.json({ url: session.link });
+  } catch (err) {
+    console.error("Failed to create customer portal session:", err);
+    res.status(500).json({ error: "Failed to create customer portal session" });
+  }
+});
+
 export async function dodoWebhookHandler(req: Request, res: Response) {
   const webhookId = req.headers["webhook-id"];
   const webhookSignature = req.headers["webhook-signature"];

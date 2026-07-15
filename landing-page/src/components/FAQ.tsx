@@ -22,7 +22,8 @@ const faqs = [
   },
   {
     question: "Can I cancel anytime?",
-    answer: "Yes, anytime. No questions asked.",
+    answer:
+      "Yes, anytime. Sign in from the Account link and use Manage subscription to cancel — no questions asked.",
   },
 ];
 

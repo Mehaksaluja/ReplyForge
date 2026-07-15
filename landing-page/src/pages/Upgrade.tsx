@@ -5,6 +5,9 @@ import { API_BASE_URL } from "../config";
 const buttonClass =
   "mt-6 inline-block rounded-full border-2 border-neutral-950 bg-orange-600 px-6 py-3 text-center text-sm font-bold text-white shadow-hard transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0a0a0a] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-60";
 
+const secondaryButtonClass =
+  "mt-6 inline-block rounded-full border-2 border-neutral-950 bg-white px-6 py-3 text-center text-sm font-bold text-neutral-950 shadow-hard transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0a0a0a] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-60";
+
 function StatusBanner() {
   const params = new URLSearchParams(window.location.search);
   const checkoutStatus = params.get("status");
@@ -33,6 +36,8 @@ export function Upgrade() {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [planStatus, setPlanStatus] = useState<PlanStatus>("unknown");
+  const [isManaging, setIsManaging] = useState(false);
+  const [manageError, setManageError] = useState<string | null>(null);
 
   useEffect(() => {
     if (status !== "signed-in" || !identity) {
@@ -81,6 +86,25 @@ export function Upgrade() {
     }
   }
 
+  async function handleManageSubscription() {
+    if (!identity) return;
+    setIsManaging(true);
+    setManageError(null);
+    try {
+      const res = await fetch(`${API_BASE_URL}/billing/portal-session`, {
+        headers: { Authorization: `Bearer ${identity.accessToken}` },
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        throw new Error(data.error ?? "Could not open the subscription portal");
+      }
+      window.location.href = data.url;
+    } catch (err) {
+      setManageError(err instanceof Error ? err.message : "Could not open the subscription portal");
+      setIsManaging(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto flex min-h-screen max-w-lg flex-col justify-center px-6 py-16">
@@ -90,8 +114,14 @@ export function Upgrade() {
 
         <StatusBanner />
 
-        <h1 className="font-marker text-3xl font-bold text-neutral-950">Upgrade to Pro</h1>
-        <p className="mt-2 text-neutral-600">Unlimited AI replies, right inside Gmail — $7/month.</p>
+        <h1 className="font-marker text-3xl font-bold text-neutral-950">
+          {planStatus === "pro" ? "Your account" : "Upgrade to Pro"}
+        </h1>
+        <p className="mt-2 text-neutral-600">
+          {planStatus === "pro"
+            ? "Manage your ReplyForge Pro subscription."
+            : "Unlimited AI replies, right inside Gmail — $7/month."}
+        </p>
 
         <div className="mt-8 rounded-2xl border-2 border-neutral-950 bg-white p-6 shadow-hard">
           {status !== "signed-in" && (
@@ -115,8 +145,13 @@ export function Upgrade() {
               <p className="text-sm font-semibold text-neutral-600">Signed in as</p>
               <p className="mt-1 text-lg font-bold text-neutral-950">{identity.email}</p>
               <p className="mt-3 rounded-xl border-2 border-neutral-950 bg-orange-50 px-4 py-3 text-sm font-semibold text-neutral-800">
-                You're already on ReplyForge Pro — head back to Gmail and start replying.
+                You're on ReplyForge Pro. Manage your billing details, update your payment method, or cancel
+                anytime from the subscription portal.
               </p>
+              <button className={secondaryButtonClass} onClick={handleManageSubscription} disabled={isManaging}>
+                {isManaging ? "Opening subscription portal..." : "Manage subscription"}
+              </button>
+              {manageError && <p className="mt-3 text-sm font-semibold text-red-600">{manageError}</p>}
             </>
           )}
 

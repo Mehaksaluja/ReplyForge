@@ -34,6 +34,9 @@ const links = [
 const ctaClass =
   "rounded-full border-2 border-neutral-950 bg-orange-600 px-5 py-2.5 text-sm font-bold text-white shadow-hard transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0a0a0a] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none";
 
+const accountLinkClass =
+  "rounded-full border-2 border-neutral-950 bg-white px-5 py-2.5 text-sm font-bold text-neutral-950 shadow-hard transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#0a0a0a] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none";
+
 export function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -64,6 +67,9 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <a href="/upgrade" className={`hidden sm:inline-block ${accountLinkClass}`}>
+            Account
+          </a>
           <a href="#" className={`hidden sm:inline-block ${ctaClass}`}>
             Add to Chrome - Free
           </a>
@@ -92,6 +98,13 @@ export function Nav() {
               {link.label}
             </a>
           ))}
+          <a
+            href="/upgrade"
+            onClick={() => setMenuOpen(false)}
+            className={`mt-2 text-center ${accountLinkClass}`}
+          >
+            Account
+          </a>
           <a href="#" onClick={() => setMenuOpen(false)} className={`mt-2 text-center ${ctaClass}`}>
             Add to Chrome - Free
           </a>

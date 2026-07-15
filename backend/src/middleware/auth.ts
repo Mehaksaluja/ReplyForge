@@ -8,6 +8,7 @@ export interface AuthedUser {
   name: string;
   freeRepliesUsed: number;
   subscriptionStatus: string;
+  paymentCustomerId: string | null;
 }
 
 export interface AuthedRequest extends Request {
@@ -72,6 +73,7 @@ export async function requireAuth(req: AuthedRequest, res: Response, next: NextF
       name: name ?? row.email,
       freeRepliesUsed: row.free_replies_used,
       subscriptionStatus: row.subscription_status,
+      paymentCustomerId: row.payment_customer_id,
     };
     next();
   } catch {
