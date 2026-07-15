@@ -1,4 +1,3 @@
-import { TestingBanner } from "./components/TestingBanner";
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
 import { SocialProof } from "./components/SocialProof";
@@ -22,7 +21,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      <TestingBanner />
       <Nav />
       <main>
         <Hero />

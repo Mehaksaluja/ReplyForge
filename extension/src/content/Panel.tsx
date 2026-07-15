@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import type {
+  EnsureAuthMessage,
+  EnsureAuthResponseMessage,
   GenerateRequestMessage,
   GenerateResponseMessage,
   GetProStatusMessage,
@@ -9,6 +11,26 @@ import type {
   TogglePanelMessage,
   HistoryTurn,
 } from "../types";
+
+// Signing in interactively (Chrome's own account picker + password/2FA) can
+// legitimately take minutes - this timeout is just a backstop in case the
+// background service worker gets killed mid-wait (a known MV3 gotcha: the
+// worker can be torn down while parked on an interactive chrome.identity
+// call, orphaning the sendResponse). If that happens the sign-in itself
+// still completed and Chrome cached the token, so a retry resolves instantly.
+const AUTH_TIMEOUT_MS = 120_000;
+// The backend can cold-start on Render (30-60s+) plus generation time.
+const GENERATE_TIMEOUT_MS = 90_000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number, onTimeout: T): Promise<T> {
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => resolve(onTimeout), ms);
+    promise.then((value) => {
+      clearTimeout(timer);
+      resolve(value);
+    });
+  });
+}
 
 interface ChatMessage {
   id: number;
@@ -76,6 +98,15 @@ function openLandingPage() {
   chrome.runtime.sendMessage(message);
 }
 
+function ensureAuth(): Promise<EnsureAuthResponseMessage> {
+  const message: EnsureAuthMessage = { type: "ENSURE_AUTH" };
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(message, (response: EnsureAuthResponseMessage) => {
+      resolve(response ?? { success: false, error: "No response from extension background." });
+    });
+  });
+}
+
 function checkProStatus(): Promise<boolean> {
   const message: GetProStatusMessage = { type: "GET_PRO_STATUS" };
   return new Promise((resolve) => {
@@ -95,6 +126,7 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([INTRO_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [insertedId, setInsertedId] = useState<number | null>(null);
   const [insertingId, setInsertingId] = useState<number | null>(null);
   const [isPro, setIsPro] = useState(false);
@@ -170,6 +202,30 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
     ]);
   }
 
+  // Signs in first (if needed) before ever calling requestReply, so a slow
+  // human sign-in doesn't happen silently underneath a "generating..."
+  // indicator, and so the two waits get separate, appropriate timeouts.
+  async function generateReply(thread: string, instruction: string, history: HistoryTurn[]) {
+    setIsAuthenticating(true);
+    const auth = await withTimeout(ensureAuth(), AUTH_TIMEOUT_MS, {
+      success: false,
+      error: "Sign-in is taking too long. Please try again.",
+    });
+    setIsAuthenticating(false);
+
+    if (!auth.success) {
+      setIsLoading(false);
+      pushResponse(instruction, { error: auth.error ?? "Sign-in failed. Please try again." });
+      return;
+    }
+
+    const response = await withTimeout(requestReply(thread, instruction, history), GENERATE_TIMEOUT_MS, {
+      error: "The request timed out. Please try again.",
+    });
+    setIsLoading(false);
+    pushResponse(instruction, response);
+  }
+
   async function handleSend() {
     const text = input.trim();
     if (!text || isLoading) return;
@@ -180,9 +236,7 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
     setInput("");
     setIsLoading(true);
 
-    const response = await requestReply(thread, text, history);
-    setIsLoading(false);
-    pushResponse(text, response);
+    await generateReply(thread, text, history);
   }
 
   async function handleRetry(message: ChatMessage) {
@@ -190,9 +244,7 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
     setIsLoading(true);
     const thread = getThreadContext();
     const history = buildHistory(messages);
-    const response = await requestReply(thread, message.retryInstruction, history);
-    setIsLoading(false);
-    pushResponse(message.retryInstruction, response);
+    await generateReply(thread, message.retryInstruction, history);
   }
 
   function handleUpgrade() {
@@ -267,7 +319,12 @@ export function Panel({ getThreadContext, onInsert }: PanelProps) {
                 )}
               </div>
             ))}
-            {isLoading && (
+            {isAuthenticating && (
+              <div className="rf-message rf-message-assistant">
+                <div>Waiting for you to sign in…</div>
+              </div>
+            )}
+            {isLoading && !isAuthenticating && (
               <div className="rf-message rf-message-assistant rf-typing">
                 <span></span>
                 <span></span>

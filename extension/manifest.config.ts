@@ -28,7 +28,7 @@ export default defineManifest(({ command }) => ({
       js: ["src/content/content-script.tsx"],
     },
   ],
-  permissions: ["identity"],
+  permissions: ["identity", "storage"],
   host_permissions:
     command === "serve"
       ? ["http://localhost:3000/*", "https://ai-email-extension.onrender.com/*"]

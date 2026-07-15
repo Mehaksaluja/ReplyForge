@@ -1,4 +1,6 @@
 import type {
+  EnsureAuthMessage,
+  EnsureAuthResponseMessage,
   GenerateRequestMessage,
   GenerateResponseMessage,
   GetProStatusMessage,
@@ -81,13 +83,34 @@ chrome.runtime.onMessage.addListener(
       | OpenUpgradePageMessage
       | OpenLandingPageMessage
       | WarmBackendMessage
-      | GetProStatusMessage,
+      | GetProStatusMessage
+      | EnsureAuthMessage,
     _sender,
     sendResponse
   ) => {
     if (message.type === "WARM_BACKEND") {
       warmBackendIfStale();
       return false;
+    }
+
+    if (message.type === "ENSURE_AUTH") {
+      (async () => {
+        try {
+          // Interactive: this is the step that may pop Chrome's sign-in UI
+          // and block on the user. Kept as its own message/response so a
+          // long human sign-in wait doesn't sit inside the same round trip
+          // as the /generate fetch - see Panel.tsx's ensureAuth() for why.
+          await getAuthToken(true);
+          sendResponse({ success: true } satisfies EnsureAuthResponseMessage);
+        } catch (err) {
+          console.error("ReplyForge: sign-in failed", err);
+          sendResponse({
+            success: false,
+            error: "Sign-in failed or was cancelled.",
+          } satisfies EnsureAuthResponseMessage);
+        }
+      })();
+      return true;
     }
 
     if (message.type === "GET_PRO_STATUS") {

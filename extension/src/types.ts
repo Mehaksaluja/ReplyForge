@@ -38,3 +38,12 @@ export interface GetProStatusMessage {
 export interface ProStatusResponseMessage {
   isPro: boolean;
 }
+
+export interface EnsureAuthMessage {
+  type: "ENSURE_AUTH";
+}
+
+export interface EnsureAuthResponseMessage {
+  success: boolean;
+  error?: string;
+}
