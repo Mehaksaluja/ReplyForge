@@ -49,7 +49,9 @@ export function Hero() {
 
           <div className="mt-9 flex flex-wrap items-center gap-5">
             <motion.a
-              href="#"
+              href="https://chromewebstore.google.com/detail/hhjjdabhmacggchdgeejcdabnpjpaakd"
+              target="_blank"
+              rel="noopener noreferrer"
               whileTap={{ scale: 0.97 }}
               className={ctaClass}
             >

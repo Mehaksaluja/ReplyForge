@@ -70,7 +70,12 @@ export function Nav() {
           <a href="/upgrade" className={`hidden sm:inline-block ${accountLinkClass}`}>
             Account
           </a>
-          <a href="#" className={`hidden sm:inline-block ${ctaClass}`}>
+          <a
+            href="https://chromewebstore.google.com/detail/hhjjdabhmacggchdgeejcdabnpjpaakd"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`hidden sm:inline-block ${ctaClass}`}
+          >
             Add to Chrome - Free
           </a>
 
@@ -105,7 +110,13 @@ export function Nav() {
           >
             Account
           </a>
-          <a href="#" onClick={() => setMenuOpen(false)} className={`mt-2 text-center ${ctaClass}`}>
+          <a
+            href="https://chromewebstore.google.com/detail/hhjjdabhmacggchdgeejcdabnpjpaakd"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMenuOpen(false)}
+            className={`mt-2 text-center ${ctaClass}`}
+          >
             Add to Chrome - Free
           </a>
         </nav>

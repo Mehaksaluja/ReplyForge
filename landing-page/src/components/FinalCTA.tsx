@@ -21,7 +21,9 @@ export function FinalCTA() {
           Stop opening a new tab and writing a prompt for every single email. Install ReplyForge and clear your inbox at Gmail speed.
         </p>
         <motion.a
-          href="#"
+          href="https://chromewebstore.google.com/detail/hhjjdabhmacggchdgeejcdabnpjpaakd"
+          target="_blank"
+          rel="noopener noreferrer"
           whileTap={{ scale: 0.97 }}
           className="mt-8 inline-block rounded-full border-2 border-white bg-orange-600 px-8 py-3.5 text-base font-bold text-white shadow-[4px_4px_0_0_#ffffff] transition-all hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[1px_1px_0_0_#ffffff] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
         >

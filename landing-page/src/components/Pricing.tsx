@@ -56,7 +56,12 @@ export function Pricing() {
               <PlanFeature>Dark mode</PlanFeature>
             </ul>
 
-            <a href="#" className={`${ctaClass} bg-white text-neutral-950 shadow-hard hover:shadow-[2px_2px_0_0_#0a0a0a]`}>
+            <a
+              href="https://chromewebstore.google.com/detail/hhjjdabhmacggchdgeejcdabnpjpaakd"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${ctaClass} bg-white text-neutral-950 shadow-hard hover:shadow-[2px_2px_0_0_#0a0a0a]`}
+            >
               Add to Chrome - Free
             </a>
           </motion.div>
